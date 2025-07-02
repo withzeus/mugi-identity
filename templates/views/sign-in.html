@@ -1,0 +1,406 @@
+{{define "head_scripts"}}
+<style>
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .form {
+    --input-focus: #007bff3b;
+    --font-color: #323232;
+    --font-color-sub: #666;
+    --color-white: #fff;
+    --main-color: black;
+    --mugi-color: #f1c070;
+    --belt-color: #d25950;
+    padding: 50px 100px;
+    background: transparent;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px) contrast(0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--font-color-sub);
+    box-shadow: 2px 1px var(--font-color-sub);
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .title {
+    color: var(--main-color);
+    font-weight: 600;
+    font-size: 26px;
+    margin-bottom: 25px;
+  }
+
+  .title span {
+    color: var(--font-color-sub);
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  .input {
+    width: 280px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    background-color: var(--color-white);
+    box-shadow: 2px 1px var(--font-color-sub);
+    font-size: 15px;
+    color: var(--font-color);
+    padding: 5px 10px;
+    outline: none;
+  }
+
+  .input::placeholder {
+    color: var(--font-color-sub);
+    opacity: 0.8;
+  }
+
+  .input:focus {
+    border: 1px solid var(--belt-color);
+    box-shadow: 2px 1px var(--belt-color);
+  }
+
+  .login-with {
+    display: flex;
+    margin: 20px auto 0 auto;
+  }
+
+  .button-log {
+    cursor: pointer;
+    width: 280px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid var(--font-color-sub);
+    background-color: var(--color-white);
+    box-shadow: 3px 2px var(--font-color-sub);
+    color: var(--font-color);
+    font-size: 25px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding: 0px 20px;
+    gap: 10px;
+  }
+
+  .button-log-text {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    fill: var(--main-color);
+  }
+
+  .button-log:active,
+  .button-confirm:active {
+    box-shadow: 0px 0px var(--main-color);
+    transform: translate(3px, 3px);
+  }
+
+  .button-confirm {
+    width: 280px;
+    height: 44px;
+    border-radius: 15px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    background-color: var(--main-color);
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: 3px;
+  }
+
+  .sign-up a {
+    color: var(--font-color);
+  }
+
+  .button-confirm:disabled {
+    background-color: var(--font-color-sub);
+    border: 2px solid var(--font-color-sub);
+  }
+
+  .notification-container {
+    position: fixed;
+    top: 2%;
+    right: 2%;
+    z-index: 1000;
+    max-width: 80%;
+
+    --content-color: black;
+    --background-color: #f3f3f3;
+    --font-size-content: 1em;
+    --icon-size: 2em;
+
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    list-style-type: none;
+    font-family: sans-serif;
+    color: var(--content-color);
+  }
+
+  /* Notification Item */
+
+  .notification-item {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 1em;
+    overflow: hidden;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: rgba(111, 111, 111, 0.2) 0px 8px 24px;
+    background-color: var(--background-color);
+    transition: all 250ms ease;
+    --grid-color: rgba(225, 225, 225, 0.7);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+    background-size: 55px 55px;
+  }
+
+  .notification-item svg {
+    transition: 250ms ease;
+  }
+
+  .notification-item:hover {
+    transform: scale(1.01);
+  }
+
+  .notification-item:active {
+    transform: scale(1.05);
+  }
+
+  .notification-item .notification-close:hover {
+    background-color: rgba(204, 204, 204, 0.45);
+  }
+
+  .notification-item .notification-close:hover svg {
+    color: rgb(0, 0, 0);
+  }
+
+  .notification-item .notification-close:active svg {
+    transform: scale(1.1);
+  }
+
+  .notification-item .notification-close {
+    padding: 2px;
+    border-radius: 5px;
+    transition: all 250ms;
+  }
+
+  .notification-container svg {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    color: var(--content-color);
+  }
+
+  .notification-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .error {
+    color: #7f1d1d;
+    background-color: #ff7e7e;
+    --grid-color: rgba(239, 68, 68, 0.25);
+    background-image: linear-gradient(
+        0deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      ),
+      linear-gradient(
+        90deg,
+        transparent 23%,
+        var(--grid-color) 24%,
+        var(--grid-color) 25%,
+        transparent 26%,
+        transparent 73%,
+        var(--grid-color) 74%,
+        var(--grid-color) 75%,
+        transparent 76%,
+        transparent
+      );
+  }
+
+  .error svg {
+    color: #7f1d1d;
+  }
+
+  .error .notification-progress-bar {
+    background-color: #7f1d1d;
+  }
+
+  .error:hover {
+    background-color: #ff5f5f;
+  }
+
+  .notification-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .notification-text {
+    font-size: var(--font-size-content);
+    user-select: none;
+  }
+
+  .notification-close {
+    cursor: pointer;
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const handle = document.getElementById("handle");
+    const password = document.getElementById("password");
+    const button = document.getElementById("button-confirm");
+
+    function checkInputs() {
+      const h = handle.value.trim();
+      const p = password.value.trim();
+      button.disabled = !(h && p);
+    }
+    handle.addEventListener("input", checkInputs);
+    password.addEventListener("input", checkInputs);
+    checkInputs();
+
+    document
+      .getElementById("notification-close")
+      .addEventListener("click", function () {
+        document.getElementById("notification-container").style.display =
+          "none";
+      });
+  });
+</script>
+{{end}} {{define "content"}}
+<div class="content">
+  {{if .Error}}
+  <ul class="notification-container" id="notification-container">
+    <li class="notification-item error">
+      <div class="notification-content">
+        <div class="notification-icon">
+          <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            ></path>
+          </svg>
+        </div>
+        <div class="notification-text">{{.Error}}</div>
+      </div>
+      <div class="notification-icon notification-close" id="notification-close">
+        <svg aria-hidden="true" fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18 17.94 6M18 18 6.06 6"
+          ></path>
+        </svg>
+      </div>
+    </li>
+  </ul>
+  {{ end }}
+
+  <form class="form" method="post" action="/login">
+    <div class="title">Welcome,<br /><span>sign in to continue</span></div>
+    <input
+      id="handle"
+      class="input"
+      name="handle"
+      placeholder="Email or Phone Number"
+      type="text"
+      autocomplete="off"
+    />
+    <input
+      id="password"
+      class="input"
+      name="password"
+      placeholder="Password"
+      type="password"
+      autocomplete="off"
+    />
+    <button class="button-confirm" id="button-confirm">Continue →</button>
+    <div class="sign-up">
+      <a>Don't have mugi account? <a href="/sign-up">Sign up</a></a>
+    </div>
+    <div class="login-with">
+      <div class="button-log">
+        <svg
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns="http://www.w3.org/2000/svg"
+          xml:space="preserve"
+          width="56.6934px"
+          viewBox="0 0 56.6934 56.6934"
+          version="1.1"
+          style="enable-background: new 0 0 56.6934 56.6934"
+          id="Layer_1"
+          height="56.6934px"
+          class="icon"
+        >
+          <path
+            d="M51.981,24.4812c-7.7173-0.0038-15.4346-0.0019-23.1518-0.001c0.001,3.2009-0.0038,6.4018,0.0019,9.6017  c4.4693-0.001,8.9386-0.0019,13.407,0c-0.5179,3.0673-2.3408,5.8723-4.9258,7.5991c-1.625,1.0926-3.492,1.8018-5.4168,2.139  c-1.9372,0.3306-3.9389,0.3729-5.8713-0.0183c-1.9651-0.3921-3.8409-1.2108-5.4773-2.3649  c-2.6166-1.8383-4.6135-4.5279-5.6388-7.5549c-1.0484-3.0788-1.0561-6.5046,0.0048-9.5805  c0.7361-2.1679,1.9613-4.1705,3.5708-5.8002c1.9853-2.0324,4.5664-3.4853,7.3473-4.0811c2.3812-0.5083,4.8921-0.4113,7.2234,0.294  c1.9815,0.6016,3.8082,1.6874,5.3044,3.1163c1.5125-1.5039,3.0173-3.0164,4.527-4.5231c0.7918-0.811,1.624-1.5865,2.3908-2.4196  c-2.2928-2.1218-4.9805-3.8274-7.9172-4.9056C32.0723,4.0363,26.1097,3.995,20.7871,5.8372  C14.7889,7.8907,9.6815,12.3763,6.8497,18.0459c-0.9859,1.9536-1.7057,4.0388-2.1381,6.1836  C3.6238,29.5732,4.382,35.2707,6.8468,40.1378c1.6019,3.1768,3.8985,6.001,6.6843,8.215c2.6282,2.0958,5.6916,3.6439,8.9396,4.5078  c4.0984,1.0993,8.461,1.0743,12.5864,0.1355c3.7284-0.8581,7.256-2.6397,10.0725-5.24c2.977-2.7358,5.1006-6.3403,6.2249-10.2138  C52.5807,33.3171,52.7498,28.8064,51.981,24.4812z"
+          ></path>
+        </svg>
+        <p class="button-log-text">Continue with google</p>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}

@@ -1,0 +1,13 @@
+POST http://localhost:8000/client/register HTTP/1.1
+content-type: application/json
+
+{
+    "application_name": "mugi overflow",
+    "website": "https://stack.mugi-tech.com",
+    "logo": "https://placehold.co/400",
+    "redirect_uri": ["https://localhost:8000/callback"]
+}
+
+###
+
+GET http://localhost:8000/authorize?response_type=code&client_id=20&redirect_uri=REDIRECT_URI&scope=photos&state=1234zyx HTTP/1.1
