@@ -1,5 +1,5 @@
 build:
-	@go build -o bin/mugi-id-server main.go
+	@go build -o bin/mugi-id-server cmd/main.go
 
 test:
 	@go test -v ./...
