@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 
@@ -42,7 +41,7 @@ func NewPgxPool(db DBConfig) (*pgxpool.Pool, func(), error) {
 	p, err := pgxpool.New(context.Background(), db.GetCS())
 
 	if err != nil {
-		return nil, f, errors.New("db: connection failure")
+		return nil, f, fmt.Errorf("connection failure")
 	}
 
 	err = PingPoolInfo(p)
@@ -66,7 +65,7 @@ func PingPoolInfo(pool *pgxpool.Pool) error {
 	err := pool.Ping(context.Background())
 
 	if err != nil {
-		return errors.New("db: connection error")
+		return fmt.Errorf("connection error")
 	}
 
 	var (
@@ -81,9 +80,9 @@ func PingPoolInfo(pool *pgxpool.Pool) error {
 
 	switch {
 	case err == sql.ErrNoRows:
-		return errors.New("no rows were returned")
+		return fmt.Errorf("no rows were returned")
 	case err != nil:
-		return errors.New("database connection error")
+		return fmt.Errorf("connection error")
 	default:
 		log.Printf("database version: %s\n", dbVersion)
 		log.Printf("current database user: %s\n", currentUser)
