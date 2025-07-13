@@ -4,14 +4,7 @@ import (
 	"fmt"
 )
 
-type IIdentity interface {
-	Get()
-	Find(uid string)
-	Create() error
-	Update(uid string) error
-}
-
-type Identity struct {
+type Model struct {
 	UID         string
 	Handle      string
 	Email       string
@@ -19,11 +12,11 @@ type Identity struct {
 	PassKey     string
 }
 
-func (i *Identity) TableName() string {
+func (i *Model) TableName() string {
 	return "uids"
 }
 
-func (i *Identity) Validate() error {
+func (i *Model) Validate() error {
 	if i.UID == "" ||
 		(i.Email == "" && i.PhoneNumber == "") ||
 		i.Handle == "" || i.PassKey == "" {
@@ -32,15 +25,15 @@ func (i *Identity) Validate() error {
 	return nil
 }
 
-type IdentityResponse struct {
+type JsonResponse struct {
 	Handle      string `json:"handle"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
 	PassKey     string `json:"passkey"`
 }
 
-func (i *Identity) ToResponse() *IdentityResponse {
-	return &IdentityResponse{
+func (i *Model) ToJsonResponse() *JsonResponse {
+	return &JsonResponse{
 		Handle:      i.Handle,
 		Email:       i.Email,
 		PhoneNumber: i.PhoneNumber,

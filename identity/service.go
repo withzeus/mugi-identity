@@ -1,22 +1,23 @@
 package identity
 
-type IIdentityService interface {
-	Create(i Identity)
+import (
+	"github.com/withzeus/mugi-identity/core"
+)
+
+type Service struct {
+	ds *Datastore
+	h  core.Helper
 }
 
-type IdentityService struct {
-	db DB
+func NewService(ds *Datastore, h core.Helper) *Service {
+	return &Service{ds: ds, h: h}
 }
 
-func NewIdentityService(db DB) *IdentityService {
-	return &IdentityService{db: db}
-}
-
-func (s *IdentityService) Create(id Identity) (*IdentityResponse, error) {
-	i, err := s.db.Create(id)
+func (s *Service) Create(md Model) (*JsonResponse, error) {
+	i, err := s.ds.Create(md)
 
 	if err != nil {
 		return nil, err
 	}
-	return i.ToResponse(), nil
+	return i.ToJsonResponse(), nil
 }

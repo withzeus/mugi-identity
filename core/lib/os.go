@@ -2,9 +2,9 @@ package lib
 
 import "os"
 
-type Env struct{}
+type OS struct{}
 
-func (e *Env) GetEnv(k, f string) string {
+func (e *OS) GetEnv(k, f string) string {
 	if v, ok := os.LookupEnv(k); ok {
 		return v
 	}

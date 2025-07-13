@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -23,19 +25,19 @@ func (db DBConfig) GetCS() string {
 		db.Username, db.Password, db.Hostname, db.Port, db.DBName)
 }
 
-type DBS struct {
+type RootDB struct {
 	pool *pgxpool.Pool
 }
 
-func NewDBS(p *pgxpool.Pool) DBS {
-	return DBS{pool: p}
+func NewRootDB(p *pgxpool.Pool) RootDB {
+	return RootDB{pool: p}
 }
 
-func (dbs DBS) GetPool() *pgxpool.Pool {
+func (dbs RootDB) GetPool() *pgxpool.Pool {
 	return dbs.pool
 }
 
-func NewDBP(db DBConfig) (*pgxpool.Pool, func(), error) {
+func NewPgxPool(db DBConfig) (*pgxpool.Pool, func(), error) {
 	f := func() {}
 	p, err := pgxpool.New(context.Background(), db.GetCS())
 
@@ -43,7 +45,7 @@ func NewDBP(db DBConfig) (*pgxpool.Pool, func(), error) {
 		return nil, f, errors.New("db: connection failure")
 	}
 
-	err = validateDBP(p)
+	err = PingPoolInfo(p)
 	if err != nil {
 		return nil, f, err
 	}
@@ -51,7 +53,16 @@ func NewDBP(db DBConfig) (*pgxpool.Pool, func(), error) {
 	return p, func() { p.Close() }, nil
 }
 
-func validateDBP(pool *pgxpool.Pool) error {
+type IPgx interface {
+	Begin(context.Context) (pgx.Tx, error)
+	Exec(context.Context, string, ...any) (pgconn.CommandTag, error)
+	QueryRow(context.Context, string, ...any) pgx.Row
+	Query(context.Context, string, ...any) (pgx.Rows, error)
+	Ping(context.Context) error
+	Close()
+}
+
+func PingPoolInfo(pool *pgxpool.Pool) error {
 	err := pool.Ping(context.Background())
 
 	if err != nil {

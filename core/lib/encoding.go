@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 )
 
 type Encoder struct{}
@@ -56,4 +57,14 @@ func (j *Encoder) FromJSON(b []byte, v any) error {
 		return fmt.Errorf("json decoding error: %s", err.Error())
 	}
 	return nil
+}
+
+func (j *Encoder) FromIoReader(ir io.Reader, v any) error {
+	b, err := io.ReadAll(ir)
+
+	if err != nil {
+		return fmt.Errorf("reader decoding error: %s", err.Error())
+	}
+
+	return j.FromJSON(b, v)
 }
