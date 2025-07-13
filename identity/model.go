@@ -2,6 +2,8 @@ package identity
 
 import (
 	"fmt"
+
+	"github.com/oklog/ulid/v2"
 )
 
 type Model struct {
@@ -13,27 +15,30 @@ type Model struct {
 }
 
 func (i *Model) TableName() string {
-	return "uids"
+	return "users"
+}
+
+func (i *Model) ULID() string {
+	return ulid.Make().String()
 }
 
 func (i *Model) Validate() error {
-	if i.UID == "" ||
-		(i.Email == "" && i.PhoneNumber == "") ||
+	if (i.Email == "" && i.PhoneNumber == "") ||
 		i.Handle == "" || i.PassKey == "" {
-		return fmt.Errorf("identity: data invalid")
+		return fmt.Errorf("bad request")
 	}
 	return nil
 }
 
-type JsonResponse struct {
+type Response struct {
 	Handle      string `json:"handle"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
 	PassKey     string `json:"passkey"`
 }
 
-func (i *Model) ToJsonResponse() *JsonResponse {
-	return &JsonResponse{
+func (i *Model) ToResponse() *Response {
+	return &Response{
 		Handle:      i.Handle,
 		Email:       i.Email,
 		PhoneNumber: i.PhoneNumber,

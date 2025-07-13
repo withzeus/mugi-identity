@@ -5,8 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
+	"log"
 )
 
 type Encoder struct{}
@@ -43,28 +43,27 @@ func (b64 *Base64) EncodeString(len int) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-func (e *Encoder) ToJSON(v any) ([]byte, error) {
+func (e *Encoder) ToJSON(v any) []byte {
 	b, err := json.Marshal(v)
 	if err != nil {
-		return nil, fmt.Errorf("json encoding error: %s", err.Error())
+		log.Printf("encoding.ToJSON - %s", err.Error())
 	}
-	return b, nil
+	return b
 }
 
-func (j *Encoder) FromJSON(b []byte, v any) error {
-	err := json.Unmarshal(b, &v)
+func (j *Encoder) FromJSON(b []byte, v any) {
+	err := json.Unmarshal(b, v)
 	if err != nil {
-		return fmt.Errorf("json decoding error: %s", err.Error())
+		log.Printf("encoding.FromJSON - %s", err.Error())
 	}
-	return nil
 }
 
-func (j *Encoder) FromIoReader(ir io.Reader, v any) error {
+func (j *Encoder) FromIoReader(ir io.Reader, v any) {
 	b, err := io.ReadAll(ir)
 
 	if err != nil {
-		return fmt.Errorf("reader decoding error: %s", err.Error())
+		log.Printf("encoding.FromIoReader - %s", err.Error())
 	}
 
-	return j.FromJSON(b, v)
+	j.FromJSON(b, v)
 }

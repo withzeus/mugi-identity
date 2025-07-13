@@ -46,18 +46,22 @@ func (handler Handler) Handle(w http.ResponseWriter, r *http.Request) error {
 func (handler Handler) CreateUser(w http.ResponseWriter, r *http.Request) error {
 	var md Model
 
-	handler.S.h.FromIoReader(r.Body, md)
+	handler.S.h.FromIoReader(r.Body, &md)
+
+	log.Printf("HTTP POST /users - %+v", md)
 
 	err := md.Validate()
 	if err != nil {
 		return lib.HttpStatusError{Code: 404, Err: err}
 	}
 
-	users, err := handler.S.Create(md)
+	user, err := handler.S.Create(md)
 	if err != nil {
 		return lib.HttpStatusError{Code: 500, Err: err}
 	}
 
-	fmt.Fprintf(w, "%+v", users)
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(w, "%s", handler.S.h.ToJSON(user))
+
 	return nil
 }

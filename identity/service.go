@@ -13,11 +13,11 @@ func NewService(ds *Datastore, h core.Helper) *Service {
 	return &Service{ds: ds, h: h}
 }
 
-func (s *Service) Create(md Model) (*JsonResponse, error) {
+func (s *Service) Create(md Model) (*Response, error) {
 	i, err := s.ds.Create(md)
 
 	if err != nil {
 		return nil, err
 	}
-	return i.ToJsonResponse(), nil
+	return i.ToResponse(), nil
 }
