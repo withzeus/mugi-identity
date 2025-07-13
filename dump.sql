@@ -1,6 +1,5 @@
-CREATE SEQUENCE uid_seq;
-CREATE TABLE uids (
-	uid int NOT null DEFAULT nextval('uid_seq'),
+CREATE TABLE public.users (
+	uid varchar(26) NOT null,
 	handle varchar(30) NOT NULL,
 	email varchar(75),
 	phone_number varchar(100),
