@@ -1,4 +1,4 @@
-package identity
+package tenant
 
 import (
 	"fmt"
@@ -38,13 +38,13 @@ func (handler Handler) Handle(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case http.MethodPost:
 		log.Printf("HTTP %s %s - %s", r.Method, r.URL.Path, "Requested")
-		return handler.CreateUser(w, r)
+		return handler.CreateTenant(w, r)
 	default:
 		return lib.HttpStatusError{Code: http.StatusMethodNotAllowed, Err: fmt.Errorf("method not allowed")}
 	}
 }
 
-func (handler Handler) CreateUser(w http.ResponseWriter, r *http.Request) error {
+func (handler Handler) CreateTenant(w http.ResponseWriter, r *http.Request) error {
 	var md Model
 
 	handler.S.h.FromIoReader(r.Body, &md)
@@ -54,7 +54,7 @@ func (handler Handler) CreateUser(w http.ResponseWriter, r *http.Request) error 
 		return lib.HttpStatusError{Code: 404, Err: err}
 	}
 
-	user, err := handler.S.Create(md)
+	tenant, err := handler.S.Create(md)
 	if err != nil {
 		return lib.HttpStatusError{Code: 500, Err: err}
 	}
@@ -62,7 +62,7 @@ func (handler Handler) CreateUser(w http.ResponseWriter, r *http.Request) error 
 	w.Header().Set("Content-Type", "application/json")
 
 	log.Printf("HTTP 201 - %s", "Created")
-	fmt.Fprintf(w, "%s", handler.S.h.ToJSON(user))
+	fmt.Fprintf(w, "%s", handler.S.h.ToJSON(tenant))
 
 	return nil
 }

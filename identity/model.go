@@ -3,23 +3,23 @@ package identity
 import (
 	"fmt"
 
-	"github.com/oklog/ulid/v2"
+	"github.com/withzeus/mugi-identity/core/db"
 )
 
 type Model struct {
 	UID         string
-	Handle      string
-	Email       string
-	PhoneNumber string
-	PassKey     string
+	Handle      string `json:"handle"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phone_number"`
+	PassKey     string `json:"passkey"`
+	CreatedAt   string
+	UpdatedAt   string
+	DeletedAt   string
+	db.Model
 }
 
 func (i *Model) TableName() string {
 	return "users"
-}
-
-func (i *Model) ULID() string {
-	return ulid.Make().String()
 }
 
 func (i *Model) Validate() error {

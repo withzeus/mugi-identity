@@ -8,6 +8,7 @@ import (
 	"github.com/withzeus/mugi-identity/core"
 	"github.com/withzeus/mugi-identity/core/db"
 	"github.com/withzeus/mugi-identity/identity"
+	"github.com/withzeus/mugi-identity/tenant"
 )
 
 type App struct {
@@ -34,12 +35,16 @@ func (app *App) Run() {
 
 	defer close()
 
-	userHandler := identity.NewHandler(pool, app.helper)
+	identityHandler := identity.NewHandler(pool, app.helper)
+	tenantHandler := tenant.NewHandler(pool, app.helper)
 
 	port := app.helper.GetEnv("APP_PORT", "8000")
 
-	http.Handle("/users", userHandler)
+	log.Printf("HTTP - registered %s", "/users")
+	http.Handle("/users", identityHandler)
+	log.Printf("HTTP - registered %s", "/tenants")
+	http.Handle("/tenants", tenantHandler)
 
-	log.Printf("http.server - started on :%s\n", port)
+	log.Printf("HTTP - server started on :%s\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
