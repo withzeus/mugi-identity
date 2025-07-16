@@ -3,11 +3,12 @@ package tenant
 import (
 	"fmt"
 
-	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/ext"
 )
 
 type Model struct {
-	ID          string
+	ID string
+	ext.ULID
 	Name        string `json:"name"`
 	Secret      string
 	Website     string `json:"website"`
@@ -16,11 +17,10 @@ type Model struct {
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
-	db.Model
 }
 
 func (m *Model) TableName() string {
-	return "tenants"
+	return "clients"
 }
 
 func (m *Model) Validate() error {

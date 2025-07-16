@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/withzeus/mugi-identity/core"
-	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/core/db/pgsql"
 	"github.com/withzeus/mugi-identity/core/lib"
 )
 
@@ -14,7 +14,7 @@ type Handler struct {
 	S Service
 }
 
-func NewHandler(pool db.IPgx, helper core.Helper) Handler {
+func NewHandler(pool pgsql.IPgx, helper core.Helper) Handler {
 	store := NewDatastore(pool)
 	service := NewService(store, helper)
 	return Handler{S: *service}

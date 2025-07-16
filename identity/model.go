@@ -3,11 +3,12 @@ package identity
 import (
 	"fmt"
 
-	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/ext"
 )
 
 type Model struct {
-	UID         string
+	UID string
+	ext.ULID
 	Handle      string `json:"handle"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
@@ -15,7 +16,6 @@ type Model struct {
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
-	db.Model
 }
 
 func (i *Model) TableName() string {

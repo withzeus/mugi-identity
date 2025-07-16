@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/withzeus/mugi-identity/core"
-	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/core/db/pgsql"
 	"github.com/withzeus/mugi-identity/core/lib"
 	"github.com/withzeus/mugi-identity/identity"
 	"github.com/withzeus/mugi-identity/tenant"
@@ -24,7 +24,7 @@ func NewApp() *App {
 }
 
 func (app *App) Run() {
-	pool, close, err := db.NewPgxPool(db.DBConfig{
+	pool, close, err := pgsql.NewPgxPool(pgsql.DBConfig{
 		Username: app.helper.GetEnv("PG_USERNAME", "postgres"),
 		Password: app.helper.GetEnv("PG_PASSWORD", "postgres"),
 		Hostname: app.helper.GetEnv("PG_HOSTNAME", "localhost"),

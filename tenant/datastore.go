@@ -3,33 +3,51 @@ package tenant
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/core/db/pgsql"
 )
 
 type Datastore struct {
-	pgx db.IPgx
+	pgx pgsql.IPgx
 }
 
-func NewDatastore(db db.IPgx) *Datastore {
+func NewDatastore(db pgsql.IPgx) *Datastore {
 	return &Datastore{pgx: db}
 }
 
-func (db Datastore) Create(md Model) (*Model, error) {
-	q := `INSERT INTO clients (id,name,secret,website,logo,redirect_uri)
-          VALUES ($1,$2,$3,$4,$5,$6) RETURNING id,name,website,logo,redirect_uri`
+func (ds Datastore) Create(md Model) (*Model, error) {
+	cols := []string{
+		"id",
+		"name",
+		"secret",
+		"website",
+		"logo",
+		"redirect_uri",
+	}
+	sel := []string{
+		"id",
+		"name",
+		"website",
+		"logo",
+		"redirect_uri",
+	}
+	query := db.NewQueryBuilder(cols).InsertInto(md.TableName()).Select(sel).GetQuery()
+	r := ds.pgx.QueryRow(context.Background(), query, md.NewUILD(), md.Name, md.Secret, md.Website, md.Logo, md.RedirectUri)
+	log.Printf("[INFO] Datastore - Executed %s", query)
 
-	r := db.pgx.QueryRow(context.Background(), q, md.ULID(), md.Name, md.Secret, md.Website, md.Logo, md.RedirectUri)
-	c := new(Model)
+	newMd := new(Model)
 
 	if err := r.Scan(
-		&c.ID,
-		&c.Name,
-		&c.Website,
-		&c.Logo,
-		&c.RedirectUri,
+		&newMd.ID,
+		&newMd.Name,
+		&newMd.Website,
+		&newMd.Logo,
+		&newMd.RedirectUri,
 	); err != nil {
+		log.Printf("[ERROR] Datastore - %+v", err)
 		return nil, fmt.Errorf("datastore error")
 	}
-	return c, nil
+	return newMd, nil
 }
