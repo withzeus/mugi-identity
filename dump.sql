@@ -7,7 +7,7 @@ CREATE TABLE public.clients (
 	website varchar(50) NOT NULL,
 	logo varchar(50),
 	redirect_uri varchar(100) NOT NULL,
-	crdated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+	created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deeated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     upleted_at TIMESTAMP WITH TIME ZONE,
 	CONSTRAINT clients_id PRIMARY KEY (id)
