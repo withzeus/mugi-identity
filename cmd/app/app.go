@@ -7,17 +7,20 @@ import (
 
 	"github.com/withzeus/mugi-identity/core"
 	"github.com/withzeus/mugi-identity/core/db"
+	"github.com/withzeus/mugi-identity/core/lib"
 	"github.com/withzeus/mugi-identity/identity"
 	"github.com/withzeus/mugi-identity/tenant"
 )
 
 type App struct {
 	helper core.Helper
+	mux    *lib.RestServeMux
 }
 
 func NewApp() *App {
 	h := core.Helper{}
-	return &App{helper: h}
+	m := lib.NewRestServeMux()
+	return &App{helper: h, mux: m}
 }
 
 func (app *App) Run() {
@@ -35,16 +38,14 @@ func (app *App) Run() {
 
 	defer close()
 
-	identityHandler := identity.NewHandler(pool, app.helper)
-	tenantHandler := tenant.NewHandler(pool, app.helper)
-
 	port := app.helper.GetEnv("APP_PORT", "8000")
 
-	log.Printf("HTTP - registered %s", "/users")
-	http.Handle("/users", identityHandler)
-	log.Printf("HTTP - registered %s", "/tenants")
-	http.Handle("/tenants", tenantHandler)
+	idhandler := identity.NewHandler(pool, app.helper)
+	app.mux.Post("/users", idhandler.CreateUser)
+
+	tenantshandler := tenant.NewHandler(pool, app.helper)
+	app.mux.Post("/tenants", tenantshandler.CreateTenant)
 
 	log.Printf("HTTP - server started on :%s\n", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), app.mux))
 }
